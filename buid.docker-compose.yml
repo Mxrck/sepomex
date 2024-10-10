@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DEBUG_DATA=true
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
+      - MONGODB_DATABASE=sepomex
+      - BATCH_MODE=true
+    volumes:
+      - ./dist:/app/dist  # Solo montar la carpeta de salida en el host
+    depends_on:
+      - mongo
+      - redis
+    links:
+      - mongo
+      - redis
+    command: ["/usr/local/bin/wait-for-it.sh", "mongo:27017", "--", "pnpm", "run", "build"]
+    #command: ["sleep", "infinity"]
+    restart: "no"
+
+  mongo:
+    image: mongodb/mongodb-community-server:latest
+    #volumes:
+    #  - ./data/mongo:/data/db
+    #ports:
+    #  - "27017:27017"
+    restart: "no"
+
+  redis:
+    image: redis:alpine
+    #ports:
+    #  - "6379:6379"
+    restart: "no"
