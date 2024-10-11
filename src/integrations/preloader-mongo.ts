@@ -67,9 +67,6 @@ const preloadSepomexData: () => AstroIntegration = () => ({
                 await mongodb.collection('postcodes').insertMany(fullData);
                 await mongodb.collection('versions').insertMany(versions);
             }
-            if (DEBUG_DATA && BATCH_MODE) {
-                fs.writeFileSync('./src/data/debug.json', JSON.stringify(fullData, null, 2));
-            }
         },
     },
 });
