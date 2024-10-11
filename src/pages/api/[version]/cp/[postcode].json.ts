@@ -1,8 +1,7 @@
-// TODO)): Todos los estados
-
 import type {APIRoute} from "astro";
 import {getClient as getMongodbClient} from "@/lib/utils-mongodb.ts";
 import {getClient as getRedisClient} from "@/lib/utils-redis.ts";
+import { EXCLUDE_LATEST_VERSION } from "astro:env/server";
 
 const redisClient = await getRedisClient({
   host: import.meta.env.REDIS_HOST!,
@@ -21,7 +20,7 @@ export const GET: APIRoute = async ({params}) => {
   const records = await redisClient.get(key);
   const _postcodes = JSON.parse(records ?? '[]');
   const data = {
-    total_postcodes: _postcodes.length,
+    total_records: _postcodes.length,
     postcodes: _postcodes,
   };
   return new Response(JSON.stringify({data}), {
@@ -36,7 +35,9 @@ export const getStaticPaths = async () => {
   const collection = mongodb.collection('versions');
   const versions = collection.find({}).limit(100);
   const data: any[] = await versions.toArray();
-  data.push({version: 'latest'});
+  if (!EXCLUDE_LATEST_VERSION) {
+    data.push({version: 'latest'});
+  }
   let paths: any[] = [];
   for await (const version of data) {
     const records = await mongodb.collection('postcodes').aggregate([

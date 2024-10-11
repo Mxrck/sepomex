@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: build.Dockerfile
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -20,19 +20,12 @@ services:
       - mongo
       - redis
     command: ["/usr/local/bin/wait-for-it.sh", "mongo:27017", "--", "pnpm", "run", "build"]
-    #command: ["sleep", "infinity"]
     restart: "no"
 
   mongo:
     image: mongodb/mongodb-community-server:latest
-    #volumes:
-    #  - ./data/mongo:/data/db
-    #ports:
-    #  - "27017:27017"
     restart: "no"
 
   redis:
     image: redis:alpine
-    #ports:
-    #  - "6379:6379"
     restart: "no"

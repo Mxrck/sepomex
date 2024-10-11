@@ -31,6 +31,13 @@ export default defineConfig({
   env: {
     schema: {
       REDIS_HOST: envField.string({ context: "server", access: "secret", optional: false }),
+      REDIS_PORT: envField.string({ context: "server", access: "secret", optional: false }),
+      DEBUG_DATA: envField.boolean({ context: "server", access: "secret", optional: true, default: true }),
+      MONGODB_HOST: envField.string({ context: "server", access: "secret", optional: false }),
+      MONGODB_PORT: envField.number({ context: "server", access: "secret", optional: false }),
+      MONGODB_DATABASE: envField.string({ context: "server", access: "secret", optional: false }),
+      BATCH_MODE: envField.boolean({ context: "server", access: "secret", optional: true, default: true }),
+      EXCLUDE_LATEST_VERSION: envField.boolean({ context: "server", access: "secret", optional: true, default: false }),
     }
   },
 });

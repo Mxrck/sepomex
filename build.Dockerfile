@@ -12,6 +12,6 @@ COPY pnpm-lock.yaml .
 RUN chmod +x /usr/local/bin/wait-for-it.sh
 RUN pnpm install --frozen-lockfile
 
-COPY . .
+COPY --exclude=dist . .
 
 CMD ["wait-for-it", "mongodb:27017", "--", "pnpm", "run", "build"]
