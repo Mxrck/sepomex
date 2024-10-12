@@ -70,10 +70,11 @@ jobs:
       - name: Build astro project
         run: |
           pnpm install --frozen-lockfile
-          pnpm run build
+          pnpm run build-silent
+          tar -czvf sepomex.tar.gz ./dist
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: ./dist
+          name: sepomex
+          path: ./sepomex.tar.gz
