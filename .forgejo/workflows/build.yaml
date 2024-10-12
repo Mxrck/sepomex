@@ -25,7 +25,8 @@ jobs:
       - name: Installing node
         shell: sh
         run: |
-          apt install nodejs -y
+          apt install curl -y
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E sh -
           npm install -g pnpm
 
       #      - name: Installing Git
