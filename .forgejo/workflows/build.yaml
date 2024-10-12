@@ -7,8 +7,8 @@ on:
 
 jobs:
   build:
-    # runs-on: ubuntu-latest
-    runs-on: [ node-20 ]
+    runs-on: ubuntu-latest
+    # runs-on: [ node-20 ]
 
     services:
       mongo:
@@ -22,15 +22,25 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: Set up dependencies
+      - name: Installing node
         shell: sh
-        run: apk add --no-cache git
+        run: |
+          apt install nodejs -y
+          npm install -g pnpm
+
+      #      - name: Installing Git
+      #        shell: sh
+      #        run: |
+      #          apk add git
+      #      - uses: actions/setup-node@v4
+      #        with:
+      #          node-version: 'lts/*'
 
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v1
 
       - name: Build and run Docker Compose
         run: |
@@ -38,7 +48,7 @@ jobs:
           docker compose -f build.docker-compose.yml down --volumes --remove-orphans
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: dist
           path: ./dist
