@@ -7,8 +7,8 @@ on:
 
 jobs:
   build:
-    # runs-on: ubuntu-latest
-    runs-on: [node-20]
+    runs-on: ubuntu-latest
+    #runs-on: [node-20]
 
     services:
       mongo:
