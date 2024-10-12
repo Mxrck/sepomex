@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     # runs-on: ubuntu-latest
-    runs-on: [self-hosted, homelab]  # Especifica que use tu runner
+    runs-on: [docker]
 
     services:
       mongo:
