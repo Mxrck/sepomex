@@ -74,7 +74,9 @@ jobs:
           tar -czvf sepomex.tar.gz ./dist
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        # uses: actions/upload-artifact@v4
+        uses: 'christopherhx/gitea-upload-artifact@v4'
         with:
           name: sepomex
+          retention-days: 30
           path: ./sepomex.tar.gz
