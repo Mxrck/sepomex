@@ -30,13 +30,10 @@ jobs:
           apt install nodejs -y
           npm install -g pnpm
 
-      #      - name: Installing Git
-      #        shell: sh
-      #        run: |
-      #          apk add git
-      #      - uses: actions/setup-node@v4
-      #        with:
-      #          node-version: 'lts/*'
+      - name: Installing Git
+        shell: sh
+        run: |
+          apt install git -y
 
       - name: Checkout code
         uses: actions/checkout@v4
