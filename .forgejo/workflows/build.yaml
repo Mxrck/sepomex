@@ -1,0 +1,40 @@
+name: Build and Test Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    # runs-on: ubuntu-latest
+    runs-on: [self-hosted, homelab]  # Especifica que use tu runner
+
+    services:
+      mongo:
+        image: mongodb/mongodb-community-server:latest
+        ports:
+          - 27017:27017
+
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and run Docker Compose
+        run: |
+          docker compose -f build.docker-compose.yml up --build --exit-code-from app --remove-orphans
+          docker compose -f build.docker-compose.yml down --volumes --remove-orphans
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: ./dist
