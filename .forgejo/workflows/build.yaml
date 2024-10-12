@@ -24,7 +24,8 @@ jobs:
     steps:
       - name: Installing Git
         run: |
-          apk add --no-cache git
+          apk update && apk upgrade && \
+          apk add --no-cache bash git openssh
 
       - name: Checkout code
         uses: actions/checkout@v4
