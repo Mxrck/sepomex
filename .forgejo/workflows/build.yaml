@@ -22,9 +22,9 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: Installing Git
-        run: |
-          apk add git
+#      - name: Installing Git
+#        run: |
+#          apk add git
 
       - name: Checkout code
         uses: actions/checkout@v4
