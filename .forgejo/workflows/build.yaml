@@ -26,7 +26,7 @@ jobs:
         shell: sh
         run: |
           apt update && apt install curl -y
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E sh -
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sh -
           npm install -g pnpm
 
       #      - name: Installing Git
