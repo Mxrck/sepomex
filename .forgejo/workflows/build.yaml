@@ -1,9 +1,13 @@
 name: Build and Test Docker Image
 
+#on:
+#  push:
+#    tags:
+#      - '*'
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - main
 
 jobs:
   build:
@@ -48,6 +52,8 @@ jobs:
 
       - name: Build astro project
         run: |
+          ping mongo
+          ping redis
           pnpm install --frozen-lockfile
           pnpm run build-silent
           tar -czvf sepomex.tar.gz ./dist
