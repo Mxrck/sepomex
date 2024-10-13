@@ -52,6 +52,7 @@ jobs:
 
       - name: Build astro project
         run: |
+          apt install -y iputils-ping
           ping mongo
           ping redis
           pnpm install --frozen-lockfile
