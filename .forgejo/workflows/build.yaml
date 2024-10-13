@@ -2,8 +2,8 @@ name: Build and Test Docker Image
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -37,31 +37,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-#      - name: Wait for Docker daemon
-#        shell: sh
-#        run: |
-#          timeout=300  # Set a timeout value in seconds
-#          until docker info; do
-#            echo "Waiting for Docker daemon to start..."
-#            sleep 5
-#            timeout=$((timeout-5))
-#            if [ $timeout -le 0 ]; then
-#              echo "Timeout waiting for Docker daemon to start."
-#              exit 1
-#            fi
-#          done
-
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v3
-#        shell: sh
-#        with:
-#          driver: docker-container
-#        run:
-
-#      - name: Build and run Docker Compose
-#        run: |
-#          docker compose -f build.docker-compose.yml up --build --exit-code-from app --remove-orphans
-#          docker compose -f build.docker-compose.yml down --volumes --remove-orphans
+      #      - name: Build and run Docker Compose
+      #        run: |
+      #          docker compose -f build.docker-compose.yml up --build --exit-code-from app --remove-orphans
+      #          docker compose -f build.docker-compose.yml down --volumes --remove-orphans
 
       - name: Create .env file
         run: |
@@ -73,9 +52,45 @@ jobs:
           pnpm run build-silent
           tar -czvf sepomex.tar.gz ./dist
 
+      - name: Wait for Docker daemon
+        shell: sh
+        run: |
+          timeout=300  # Set a timeout value in seconds
+          until docker info; do
+            echo "Waiting for Docker daemon to start..."
+            sleep 5
+            timeout=$((timeout-5))
+            if [ $timeout -le 0 ]; then
+              echo "Timeout waiting for Docker daemon to start."
+              exit 1
+            fi
+          done
+
+      - name: Build and Docker container
+        shell: sh
+        run: |
+          docker build -f deploy.Dockerfile -t git.nitrostudio.com.mx/marco/sepomex:$GITHUB_REF_NAME .
+
+      - name: Push Docker image
+        shell: sh
+        run: |
+          docker login -u ${{ secrets.FORGEJO_USERNAME }} -p ${{ secrets.FORGEJO_PASSWORD }}
+          docker push git.nitrostudio.com.mx/marco/sepomex:$GITHUB_REF_NAME
+          docker logout
+
+      #      - name: Create Release
+      #        id: create_release
+      #        uses: actions/forgejo-release@v2
+      #        env:
+      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #        with:
+      #          tag_name: ${{ github.ref_name }}
+      #          release_name: Release ${{ github.ref_name }}
+      #          draft: false
+      #          prerelease: false
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
-        # uses: 'christopherhx/gitea-upload-artifact@v4'
         with:
           name: sepomex
           retention-days: 30
