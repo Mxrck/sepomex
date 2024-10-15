@@ -1,6 +1,12 @@
 import type {APIRoute} from "astro";
 import {getClient as getMongodbClient} from "@/lib/utils-mongodb.ts";
+import {getClient as getRedisClient} from "@/lib/utils-redis.ts";
 import { EXCLUDE_LATEST_VERSION } from "astro:env/server";
+
+const redisClient = await getRedisClient({
+  host: import.meta.env.REDIS_HOST!,
+  port: import.meta.env.REDIS_PORT!,
+});
 
 const mongodb = await getMongodbClient({
   host: import.meta.env.MONGODB_HOST!,
@@ -10,12 +16,9 @@ const mongodb = await getMongodbClient({
 
 export const GET: APIRoute = async ({params}) => {
   const { version, state } = params;
-  const condition = version !== 'latest' ? { version: version } : { is_latest: true };
-  const records = await mongodb
-    .collection('postcodes')
-    .find({c_estado: state, ...condition})
-    .limit(0) // [WARN]: No limites porque queremos que se cargue el estado completo
-    .toArray();
+  const key = `${version}:state:${state}`;
+  const _records = await redisClient.get(key);
+  const records = JSON.parse(_records ?? '[]');
   const data = {
     c_estado: records[0].c_estado,
     d_estado: records[0].d_estado,
@@ -31,14 +34,9 @@ export const GET: APIRoute = async ({params}) => {
       }
       return acc;
     }, {})),
-    postcodes: records.map(postcode => {
-      const curated: any = {...postcode};
-      delete curated._id;
-      delete curated.version;
-      delete curated.filename;
-      delete curated.is_latest;
-      curated.endpoint = `/api/${version}/cp/${curated.d_codigo}.json`;
-      return curated;
+    postcodes: records.map((postcode : any) => {
+      postcode.endpoint = `/api/${version}/cp/${postcode.d_codigo}.json`;
+      return postcode;
     }),
   };
   return new Response(JSON.stringify({data}), {
