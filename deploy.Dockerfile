@@ -9,10 +9,12 @@ COPY docker/nginx/vhost.conf /app/vhost.conf
 
 ENV ACCESS_TOKEN=""
 
+# Descomentar el bloque de `location ~ /api/latest` sin afectar la llave final
 RUN LATEST_VERSION=$(jq -r '.data.versions[] | select(.is_latest == true) | .version' /app/versions.json) && \
-    sed -i '/# *location ~ \/api\/latest(.*)\$ {/,/# *rewrite/ s/# *//g' /app/vhost.conf && \
+    sed -i '/# *location ~ \/api\/latest(.*)\$ {/,/# *}/ s/# *//g' /app/vhost.conf && \
     sed -i "s/{LATEST_VERSION}/$LATEST_VERSION/" /app/vhost.conf
 
+# Si hay un ACCESS_TOKEN, descomentar el bloque `if` del `location /api/`
 RUN if [ -n "$ACCESS_TOKEN" ]; then \
       sed -i '/# *if (\$http_authorization != "Bearer {ACCESS_TOKEN}") {/,/# *return 401;/ s/# *//g' /app/vhost.conf && \
       sed -i "s/{ACCESS_TOKEN}/$ACCESS_TOKEN/" /app/vhost.conf; \
