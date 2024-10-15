@@ -10,9 +10,10 @@ COPY docker/nginx/vhost.conf /app/vhost.conf
 ENV ACCESS_TOKEN=""
 
 RUN LATEST_VERSION=$(jq -r '.data.versions[] | select(.is_latest == true) | .version' /app/versions.json) && \
-    sed -i '/# *location ~ \/api\/latest(.*)\$ {/,/# *}/ s/# *//g' /app/vhost.conf && \
-    sed -i "s/{LATEST_VERSION}/$LATEST_VERSION/" /app/vhost.conf \
-    if [ -n "$ACCESS_TOKEN" ]; then \
+    sed -i '/# *location ~ \/api\/latest(.*)\$ {/,/# *rewrite/ s/# *//g' /app/vhost.conf && \
+    sed -i "s/{LATEST_VERSION}/$LATEST_VERSION/" /app/vhost.conf
+
+RUN if [ -n "$ACCESS_TOKEN" ]; then \
       sed -i '/# *if (\$http_authorization != "Bearer {ACCESS_TOKEN}") {/,/# *return 401;/ s/# *//g' /app/vhost.conf && \
       sed -i "s/{ACCESS_TOKEN}/$ACCESS_TOKEN/" /app/vhost.conf; \
     fi
