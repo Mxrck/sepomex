@@ -320,7 +320,7 @@ Ejemplo de respuesta:
 - Node.js 18.x
 - pnpm
 - mongodb (se usa de apoyo)
-- redis (se usa de apoyo)
+- redis/garnet (se usa de apoyo)
 - docker (opcional)
 
 ### Instalación
@@ -334,7 +334,8 @@ pnpm install
 Copiar el archivo `.env.example` a `.env` y modificarlo según sea necesario:
 
 * DEBUG_DATA="true":
-    - Limpia los datos de la base de datos antes de crear los nuevos registros
+    - Limpia los datos de la base de datos antes de crear los nuevos registros (de momento es necesario, ya que no se
+      consideran los registros que ya existen)
 * BATCH_MODE="true"
     - Crea los registros de la base de datos en lotes
 * EXCLUDE_LATEST_VERSION="true"
@@ -342,7 +343,8 @@ Copiar el archivo `.env.example` a `.env` y modificarlo según sea necesario:
       evita crear una copia adicional), en el caso de optar por docker, la imagen latest usará los mismos archivos de la
       versión marcada como "latest" sin generar los archivos nuevos
 * ACCESS_TOKEN=""
-    - Se utiliza para proteger la API, se puede utilizar para limitar el acceso a la API (solo al hacer deploy con nginx)
+    - Se utiliza para proteger la API, se puede utilizar para limitar el acceso a la API (solo al hacer deploy con
+      nginx)
 
 Tardará unos minutos en crear los registros de la base de datos a partir de los archivos de SEPOMEX, esto ayuda al
 proceso
@@ -370,13 +372,15 @@ utilizando el archivo `deploy.Dockerfile`.
 
 Entre las cosas que se automatizan:
 
-* Se configura un rewrite en nginx para la versión "latest" de los archivos json estáticos (sin generar los archivos), utilizando solo la versión marcada como "latest" (EXCLUDE_LATEST_VERSION="true")
+* Se configura un rewrite en nginx para la versión "latest" de los archivos json estáticos (sin generar los archivos),
+  utilizando solo la versión marcada como "latest" (EXCLUDE_LATEST_VERSION="true")
 * Se configura la página de error 404 para que devuelva el contenido en json
-* Se configura el header de autorización para que solo se pueda acceder a la API si se envía el token de acceso (solo si ACCESS_TOKEN se establece)
-  - Se puede generar un token de acceso con el siguiente comando:
-    ```sh
-    openssl rand -hex 20
-    ```
+* Se configura el header de autorización para que solo se pueda acceder a la API si se envía el token de acceso (solo si
+  ACCESS_TOKEN se establece)
+    - Se puede generar un token de acceso con el siguiente comando:
+      ```sh
+      openssl rand -hex 20
+      ```
 
 Es necesario que la carpeta `dist` esté presente para que el build funcione correctamente. (paso anterior)
 
@@ -389,3 +393,38 @@ Para ejecutar la imagen (cambiar el puerto host por el que consideres):
 ```sh
 docker run -d --name sepomex -p 8080:80 sepomex:latest
 ```
+
+## Añadir nuevas versiones
+
+Para añadir una nueva versión, se debe descargar el nuevo archivo de sepomex:
+
+```
+https://www.correosdemexico.gob.mx/SSLServicios/ConsultaCP/CodigoPostal_Exportar.aspx
+```
+
+Después modificar el archivo `src/data/sepomex-files/data.json` añadiendo la nueva versión (recuerda actualizar la
+variable `is_latest` en la última versión):
+
+```json
+[
+  ...,
+  {
+    "day": "20",
+    "month": "01",
+    "year": "2024",
+    "filename": "20240120.txt",
+    "encoding": "latin1",
+    "is_latest": true
+  }
+]
+```
+
+Y ejecutar el proceso de build y deploy.
+
+## Próximos pasos
+
+* Generar la landing page para la API
+* Generar la documentación de la API
+* Implementar la reutilización de los archivos json estáticos para reducir la cantidad de archivos que se generan
+* Mejorar el tiempo de generación de los archivos json estáticos
+* Eliminar dependencia de mongodb
