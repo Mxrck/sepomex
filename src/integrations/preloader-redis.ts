@@ -95,9 +95,9 @@ const preloadSepomexData: () => AstroIntegration = () => ({
             }
             if (BATCH_MODE) {
                 logger.info(`Inserting batches [BATCH_MODE="${BATCH_MODE}"]`);
-                if (_postcodes.length) await redisClient.mSet(_postcodes);
-                if (_states.length) await redisClient.mSet(_states);
-                if (_municipalities.length) await redisClient.mSet(_municipalities);
+                if (Object.keys(_postcodes).length) await redisClient.mSet(_postcodes);
+                if (Object.keys(_states).length) await redisClient.mSet(_states);
+                if (Object.keys(_municipalities).length) await redisClient.mSet(_municipalities);
             }
         },
     },
