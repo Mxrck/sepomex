@@ -81,6 +81,7 @@ jobs:
         shell: sh
         run: |
           docker push git.nitrostudio.com.mx/marco/sepomex:$GITHUB_REF_NAME
+          docker push git.nitrostudio.com.mx/marco/sepomex:latest
           docker logout
 
       #      - name: Create Release
