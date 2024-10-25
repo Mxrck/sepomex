@@ -14,6 +14,21 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@layouts/*": [
+        "src/layouts/*"
+      ],
+      "@pages/*": [
+        "src/pages/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@integrations/*": [
+        "src/integrations/*"
       ]
     }
   }

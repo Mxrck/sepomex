@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 export default {
     darkMode: ['class'],
     content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
@@ -72,8 +74,12 @@ export default {
     		animation: {
     			'accordion-down': 'accordion-down 0.2s ease-out',
     			'accordion-up': 'accordion-up 0.2s ease-out'
-    		}
+    		},
+				fontFamily: {
+					sans: ['"Onest Variable"', "system-ui", "sans-serif", ...defaultTheme.fontFamily.sans],
+					heading: ['"Inter Variable"', "system-ui", "sans-serif", ...defaultTheme.fontFamily.sans],
+				}
     	}
     },
-	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography'),],
 }

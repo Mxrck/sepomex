@@ -24,7 +24,7 @@ export const GET: APIRoute = async ({params}) => {
   const data = {
     states: statesData,
   };
-  return new Response(JSON.stringify({data}), {
+  return new Response(JSON.stringify({data, error: null}), {
     status: 200,
     headers: {
       "Content-Type": "application/json",

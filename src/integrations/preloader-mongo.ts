@@ -6,7 +6,6 @@ import SepomexFiles from "../data/sepomex-files/data.json";
 import path from "path";
 export const SEPOMEX_FILES: Array<{day: string, month: string, year: string, filename: string, encoding: string, is_latest: boolean}> = SepomexFiles
 
-// TODO)): I want to change this process to use a line-by-line approach (maybe using "n-readlines")
 const getSepomexFileContent = async ({filename, encoding = 'latin1'}: {filename: string, encoding?: BufferEncoding}) => {
     const filePath = path.join('src', 'data', 'sepomex-files', filename);
     return readFileSync(filePath, {encoding, flag: 'r'}).replaceAll('\r', '').split('\n')
@@ -22,21 +21,29 @@ const preloadSepomexData: () => AstroIntegration = () => ({
             const DEBUG_DATA = _DEBUG_DATA === 'true';
             const BATCH_MODE = _BATCH_MODE === 'true';
             const mongodb = await getMongoClient({ host: MONGODB_HOST!, port: MONGODB_PORT!, database: MONGODB_DATABASE! });
+            await mongodb.dropCollection('new_versions'); // Always drop collection to avoid data duplication on development
             if (DEBUG_DATA) {
                 logger.info('Removing existing collections [DEBUG_DATA="true"]');
                 await mongodb.dropCollection('postcodes'); // Drop collection to avoid data duplication on development
                 await mongodb.dropCollection('versions'); // Drop collection to avoid data duplication on development
+                logger.info('Removing existing collections [DEBUG_DATA=true]');
             }
             await mongodb.createCollection('postcodes');
             await mongodb.createCollection('versions');
+            await mongodb.createCollection('new_versions');
             logger.info('Preloading Mongodb Data');
             const fullData = [];
             let headers: any[] = []
             const versions: any[] = []
+            const preloadedVersions = await mongodb.collection('versions').find({}).limit(0).toArray();
             for (const file of SEPOMEX_FILES) {
                 const {filename, encoding, is_latest} = file;
                 const versionName = filename.split('.')[0];
                 const version = {version: versionName, ...file}
+                if (preloadedVersions.find(version => version.version === versionName)) {
+                    logger.info(`Skipping preloaded version ${versionName}, use DEBUG_DATA=true to force preloading`);
+                    continue;
+                }
                 versions.push(version);
                 if (!BATCH_MODE) {
                     await mongodb.collection('versions').insertOne(version);
@@ -64,8 +71,9 @@ const preloadSepomexData: () => AstroIntegration = () => ({
                 }
             }
             if (BATCH_MODE) {
-                await mongodb.collection('postcodes').insertMany(fullData);
-                await mongodb.collection('versions').insertMany(versions);
+                if (fullData.length) await mongodb.collection('postcodes').insertMany(fullData);
+                if (versions.length) await mongodb.collection('versions').insertMany(versions);
+                if (versions.length) await mongodb.collection('new_versions').insertMany(versions);
             }
         },
     },

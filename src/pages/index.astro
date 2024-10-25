@@ -1,12 +1,102 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '../layouts/Layout.astro'
+import {highlight as chromaHighlight} from "chroma-highlight"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { APP_URL, LAST_UPDATED_AT } from "astro:env/server";
+import SEPOMEX_FILES from "../data/sepomex-files/data.json";
+import { chromaFormatter } from "@/lib/utils-chroma";
 ---
 
-<Layout title="Sepomex">
-	<main class="container mx-auto">
-		Contents
+<Layout>
+	<main class="flex flex-col gap-5">
+		<section class="flex container px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 justify-center gap-2">
+			<div>
+				{LAST_UPDATED_AT && (
+					<div class="mb-3">
+						<Badge variant="default">Última actualización: {LAST_UPDATED_AT}</Badge>
+					</div>
+				)}
+				<h1 class="max-w-full mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">Códigos postales de México</h1>
+				<p class="max-w-full mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400 text-center">API gratuita de consulta de códigos postales en SEPOMEX.</p>
+			</div>
+		</section>
+		<section class="alerts">
+			<div class="container mx-auto lg:max-w-[1000px]">
+				<Alert variant="warning">
+					<AlertTitle>Atención!</AlertTitle>
+					<AlertDescription>
+						Esta api se encuentra en fase de desarrollo, por lo que las rutas pueden cambiar de
+						un momento para otro.
+					</AlertDescription>
+				</Alert>
+			</div>
+		</section>
+		<section class="container mx-auto lg:max-w-[1000px]">
+			<h3 class="font-bold text-2xl">¿Porqué existe esta API?</h3>
+			<div class="flex flex-col gap-2 mt-2">
+				<p>
+					Trabajando en múltiples proyectos siempre me vi en la necesidad de re-implementar cada vez un importador de los datos de
+					SEPOMEX, los cuales con el tiempo quedaban desactualizados. De esta forma y viendo que me tocaría implementarlo una vez más,
+					decidí crear una api estática utilizando Astro y devolviendo los datos tal cual están en el archivo de texto de SEPOMEX
+					para que otros desarrolladores puedan usarlo como les sea conveniente.
+				</p>
+				<p>
+					El código será open source para quien quiera encargarse de montarlo y mantenerlo actualizado en su propio servidor,
+					por mi parte trataré de actualizarlo al menos 1 vez al mes.
+				</p>
+			</div>
+		</section>
+		<section class="container mx-auto lg:max-w-[1000px] mt-2">
+			<h3 class="font-bold text-2xl my-3">¿Cómo se utiliza?</h3>
+			<p>
+				<Badge variant="outline" className="bg-green-600 text-white">
+					{APP_URL}/api/
+					<span class="bg-green-900 text-white -my-1 py-1 px-0.5 rounded-sm inline-block">&lcub;VERSION&rcub;</span>
+					/cp/
+					<span class="bg-green-900 text-white -my-1 py-1 px-0.5 rounded-sm inline-block">&lcub;CODIGO_POSTAL&rcub;</span>
+					.json
+				</Badge>
+				<small>(versión específica)</small>
+			</p>
+			<p>
+				<Badge variant="outline" className="bg-blue-600 text-white">
+					{APP_URL}/api/latest/cp/
+					<span class="bg-blue-900 text-white -my-1 py-1 px-0.5 rounded-sm inline-block">&lcub;CODIGO_POSTAL&rcub;</span>
+					.json
+				</Badge>
+				<small>(última versión, solo disponible si se generó)</small>
+			</p>
+			<h3 class="font-bold text-2xl my-3">Versiones actuales:</h3>
+			<div class="code-block my-3" set:html={
+				chromaHighlight(
+					JSON.stringify(
+						SEPOMEX_FILES.map(({filename}) => filename.split('.')[0]),
+						null,
+						2
+					), chromaFormatter({language: 'json'})
+				)}
+			/>
+			<h3 class="font-bold text-2xl my-3">Ejemplo de petición:</h3>
+			<div class="code-block my-3 overflow-x-scroll" set:html={
+				chromaHighlight(
+					`
+const response = await fetch('${APP_URL}/api/${SEPOMEX_FILES[0]['filename'].split('.')[0]}/cp/06700.json')
+const result = await response.json()
+console.log(result)
+					`.trim(),
+					chromaFormatter({language: 'javascript'})
+				)}
+			/>
+			<span>Que nos devolverá la siguiente salida (todas las colonias pertenecientes a ese código postal):</span>
+			<div class="code-block my-3" set:html={
+			chromaHighlight(
+				JSON.stringify(JSON.parse(
+					`{"data":{"total_records":1,"postcodes":[{"d_codigo":"06700","d_asenta":"Roma Norte","d_tipo_asenta":"Colonia","d_mnpio":"Cuauhtémoc","d_estado":"Ciudad de México","d_ciudad":"Ciudad de México","d_cp":"06401","c_estado":"09","c_oficina":"06401","c_cp":"","c_tipo_asenta":"09","c_mnpio":"015","id_asenta_cpcons":"0947","d_zona":"Urbano","c_cve_ciudad":"06"}]},"error":null}`
+				), null, 2),
+				chromaFormatter({language: 'json'})
+			)}
+			/>
+		</section>
 	</main>
 </Layout>
-
-<style>
-</style>

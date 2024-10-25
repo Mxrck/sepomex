@@ -17,8 +17,8 @@ export const GET: APIRoute = async () => {
       endpoint: `/api/${version.version}.json`,
     })),
   };
-  return new Response(JSON.stringify({data}), {
-    status: 200,
+  return new Response(JSON.stringify({data, error: null}), {
+    status: 404,
     headers: {
       "Content-Type": "application/json",
     },

@@ -1,4 +1,24 @@
+---
+layout: ../layouts/Layout.astro
+title: SEPOMEX Static API
+author: Marco Maldonado
+description: SEPOMEX Static API Documentación
+---
+
+<main class="flex flex-col gap-5 container mx-auto prose dark:prose-invert">
+
 # SEPOMEX Static API
+
+  <section class="alerts">
+    <div class="container mx-auto lg:max-w-[1000px]">
+        <div class="relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] 
+            [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7 
+            bg-background text-foreground">
+            <h4 class="m-0">Atención!</h4>
+            Esta es una documentación provisional, mientras se genera la documentación de la API
+        </div>
+    </div>
+  </section>
 
 ### ¿Porqué existe esta API?
 
@@ -14,8 +34,7 @@ por mi parte trataré de actualizarlo al menos 1 vez al mes.
 ### ¿Cómo funciona?
 
 Utilizando el archivo de texto de SEPOMEX, se extraen los datos de los municipios y estados, y se crean los archivos
-json
-de cada código postal.
+json de cada código postal.
 
 Se pueden crear diferentes versiones y una versión "latest" por si siempre se quiere utilizar la última versión cargada.
 
@@ -427,3 +446,5 @@ Y ejecutar el proceso de build y deploy.
 * Implementar la reutilización de los archivos json estáticos para reducir la cantidad de archivos que se generan
 * Mejorar el tiempo de generación de los archivos json estáticos
 * Eliminar dependencia de mongodb
+
+</main>

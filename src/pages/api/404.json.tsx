@@ -1,11 +1,7 @@
 import type {APIRoute} from "astro";
 
 export const GET: APIRoute = async () => {
-  const data = {
-    error: 'Not found',
-    data: null,
-  };
-  return new Response(JSON.stringify({data}), {
+  return new Response(JSON.stringify({data: null, error: 'Not found'}), {
     status: 404,
     headers: {
       "Content-Type": "application/json",

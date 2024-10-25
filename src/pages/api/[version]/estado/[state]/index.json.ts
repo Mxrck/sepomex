@@ -39,7 +39,7 @@ export const GET: APIRoute = async ({params}) => {
       return postcode;
     }),
   };
-  return new Response(JSON.stringify({data}), {
+  return new Response(JSON.stringify({data, error: null}), {
     status: 200,
     headers: {
       "Content-Type": "application/json",

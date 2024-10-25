@@ -2,6 +2,12 @@ FROM nginx:alpine
 
 RUN apk add --no-cache jq sed
 
+WORKDIR /usr/share/nginx/html
+
+COPY dist .
+
+RUN chown -R nginx:nginx /usr/share/nginx/html
+
 WORKDIR /app
 
 COPY dist/api/versions.json /app/versions.json
@@ -22,11 +28,5 @@ RUN if [ -n "$ACCESS_TOKEN" ]; then \
 
 RUN cat /app/vhost.conf
 RUN cp /app/vhost.conf /etc/nginx/conf.d/default.conf
-
-WORKDIR /usr/share/nginx/html
-
-COPY dist .
-
-RUN chown -R nginx:nginx /usr/share/nginx/html
 
 EXPOSE 80

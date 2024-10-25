@@ -22,7 +22,10 @@ const preloadSepomexData: () => AstroIntegration = () => ({
                 await flushAll(redisOptions);
             }
             logger.info('Generating keys');
-            const records = await mongodb.collection('postcodes').find({}).limit(0).toArray();
+            const versions = await mongodb.collection('new_versions').find({}).limit(0).toArray();
+            const records = await mongodb.collection('postcodes').find({
+                version: { $in: versions.map(version => version.version) }
+            }).limit(0).toArray();
             const _postcodes: any = {};
             const _states: any = {};
             const _municipalities: any = {};
@@ -92,9 +95,9 @@ const preloadSepomexData: () => AstroIntegration = () => ({
             }
             if (BATCH_MODE) {
                 logger.info(`Inserting batches [BATCH_MODE="${BATCH_MODE}"]`);
-                await redisClient.mSet(_postcodes);
-                await redisClient.mSet(_states);
-                await redisClient.mSet(_municipalities);
+                if (_postcodes.length) await redisClient.mSet(_postcodes);
+                if (_states.length) await redisClient.mSet(_states);
+                if (_municipalities.length) await redisClient.mSet(_municipalities);
             }
         },
     },

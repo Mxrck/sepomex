@@ -23,7 +23,7 @@ export const GET: APIRoute = async ({params}) => {
     total_records: _postcodes.length,
     postcodes: _postcodes,
   };
-  return new Response(JSON.stringify({data}), {
+  return new Response(JSON.stringify({data, error: null}), {
     status: 200,
     headers: {
       "Content-Type": "application/json",

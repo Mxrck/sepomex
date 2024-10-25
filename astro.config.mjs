@@ -6,6 +6,8 @@ import preloaderMongo from './src/integrations/preloader-mongo';
 import preloaderRedis from './src/integrations/preloader-redis';
 import dotenv from 'dotenv';
 
+import icon from "astro-icon";
+
 const isProduction = import.meta.env.PROD;
 dotenv.config({ path: '.env' });
 dotenv.config({ path: '.env.local', override: true });
@@ -20,14 +22,9 @@ else {
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [
-    tailwind({
-      applyBaseStyles: false,
-    }), 
-    react(), 
-    preloaderMongo(),
-    preloaderRedis(),
-  ],
+  integrations: [tailwind({
+    applyBaseStyles: false,
+  }), react(), preloaderMongo(), preloaderRedis(), icon()],
   env: {
     schema: {
       REDIS_HOST: envField.string({ context: "server", access: "secret", optional: false }),
@@ -38,6 +35,9 @@ export default defineConfig({
       MONGODB_DATABASE: envField.string({ context: "server", access: "secret", optional: false }),
       BATCH_MODE: envField.boolean({ context: "server", access: "secret", optional: true, default: true }),
       EXCLUDE_LATEST_VERSION: envField.boolean({ context: "server", access: "secret", optional: true, default: false }),
+      APP_URL: envField.string({ context: "server", access: "public", optional: true, default: "" }),
+      REPOSITORY_URL: envField.string({ context: "server", access: "public", optional: true, default: undefined }),
+      LAST_UPDATED_AT: envField.string({ context: "server", access: "public", optional: true, default: undefined }),
     }
   },
 });
