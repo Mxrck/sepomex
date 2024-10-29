@@ -24,9 +24,15 @@ else {
 
 // https://astro.build/config
 export default defineConfig({
+  site: process.env.APP_URL,
   integrations: [tailwind({
     applyBaseStyles: false,
-  }), react(), preloaderMongo(), preloaderRedis(), icon(), sitemap()],
+  }), react(), preloaderMongo(), preloaderRedis(), icon(), sitemap({
+    filter(page) {
+      return !page.includes('api');
+    },
+    entryLimit: 10000,
+  })],
   env: {
     schema: {
       REDIS_HOST: envField.string({ context: "server", access: "secret", optional: false }),

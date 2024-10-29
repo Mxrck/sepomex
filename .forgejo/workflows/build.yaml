@@ -25,6 +25,11 @@ jobs:
           - 6379:6379
 
     steps:
+      - name: Set env
+        run: |
+          echo "LAST_UPDATED_AT=$(date '+%d/%m/%Y')" >> $GITHUB_ENV
+          echo "CURRENT_VERSION=$(echo $GITHUB_REF_NAME)" >> $GITHUB_ENV
+
       - name: Installing node
         shell: sh
         run: |
