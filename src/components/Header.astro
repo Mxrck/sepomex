@@ -2,12 +2,10 @@
 import DarkModeToggle from "./DarkModeToggle";
 import {APP_URL, REPOSITORY_URL} from "../constants";
 ---
-<header class="header container h-[60px] mx-auto px-3 mb-5 flex items-center sticky top-0 backdrop-blur-sm z-10">
+<header class="header container h-14 mx-auto px-3 mb-5 flex items-center sticky top-0 backdrop-blur-sm z-10">
     <a href={APP_URL}>
-        <img class="dark:block hidden" loading="eager" src="/images/nitrostudio-inverse.png" alt="Logo"
-             style={{width: '180px', height: 'auto'}}>
-        <img class="block dark:hidden" loading="eager" src="/images/nitrostudio.png" alt="Logo"
-             style={{width: '180px', height: 'auto'}}>
+        <img class="dark:block hidden h-8 w-auto" loading="eager" src="/images/nitrostudio-inverse.png" alt="Logo" />
+        <img class="block dark:hidden h-8 w-auto" loading="eager" src="/images/nitrostudio.png" alt="Logo" />
     </a>
     <nav class="links ml-auto">
         <ul class="flex flex-row gap-4 items-center">
