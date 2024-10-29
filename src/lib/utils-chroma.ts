@@ -1,3 +1,39 @@
+import {highlight as chromaHighlight} from "chroma-highlight"
+
+type ChromaFormatterOptions = {
+  formatter?: string,
+  language?: string,
+  theme?: ChromeHighlightTheme,
+  lineNumbers?: boolean,
+  lineNumbersInTable?: boolean,
+}
+
+export function chromaFormatter({
+                                  formatter = 'html',
+                                  lineNumbers = true,
+                                  lineNumbersInTable = true,
+                                  language = 'javascript',
+                                  theme = 'rose-pine'
+                                }: ChromaFormatterOptions): string {
+  return `
+    --formatter ${formatter} 
+    --html-only 
+    --html-inline-styles 
+    ${lineNumbers ? '--html-lines' : ''} 
+    ${lineNumbersInTable ? '--html-lines-table' : ''} 
+    --lexer ${language} 
+    --style "${theme}"
+  `.replaceAll('\n', '').replaceAll('\r', '')
+}
+
+export function chromaCodeBlock(code: string, formatterOptions?: ChromaFormatterOptions): string | Promise<string> {
+  const options = formatterOptions ?? {};
+  return chromaHighlight(
+    code.trim(),
+    chromaFormatter(options)
+  );
+}
+
 type ChromeHighlightTheme =
   |"abap"
   |"algol"
@@ -62,30 +98,4 @@ type ChromeHighlightTheme =
   |"vulcan"
   |"witchhazel"
   |"xcode"
-  |"xcode-dark"
-
-type ChromaFormatterOptions = {
-  formatter?: string,
-  language?: string,
-  theme?: ChromeHighlightTheme,
-  lineNumbers?: boolean,
-  lineNumbersInTable?: boolean,
-}
-
-export function chromaFormatter({
-                                  formatter = 'html',
-                                  lineNumbers = true,
-                                  lineNumbersInTable = true,
-                                  language = 'javascript',
-                                  theme = 'rose-pine'
-                                }: ChromaFormatterOptions): string {
-  return `
-    --formatter ${formatter} 
-    --html-only 
-    --html-inline-styles 
-    ${lineNumbers ? '--html-lines' : ''} 
-    ${lineNumbersInTable ? '--html-lines-table' : ''} 
-    --lexer ${language} 
-    --style "${theme}"
-  `.replaceAll('\n', '').replaceAll('\r', '')
-}
+  |"xcode-dark";

@@ -8,6 +8,8 @@ import dotenv from 'dotenv';
 
 import icon from "astro-icon";
 
+import sitemap from "@astrojs/sitemap";
+
 const isProduction = import.meta.env.PROD;
 dotenv.config({ path: '.env' });
 dotenv.config({ path: '.env.local', override: true });
@@ -24,7 +26,7 @@ else {
 export default defineConfig({
   integrations: [tailwind({
     applyBaseStyles: false,
-  }), react(), preloaderMongo(), preloaderRedis(), icon()],
+  }), react(), preloaderMongo(), preloaderRedis(), icon(), sitemap()],
   env: {
     schema: {
       REDIS_HOST: envField.string({ context: "server", access: "secret", optional: false }),
