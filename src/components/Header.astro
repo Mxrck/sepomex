@@ -2,23 +2,21 @@
 import DarkModeToggle from "./DarkModeToggle";
 import {APP_URL, REPOSITORY_URL} from "../constants";
 ---
-<header class="header container h-[60px] mx-auto px-3 mb-5 flex items-center sticky top-0 backdrop-blur-sm z-10">
+<header class="header container h-14 mx-auto px-3 mb-5 flex items-center sticky top-0 backdrop-blur-sm z-10">
     <a href={APP_URL}>
-        <img class="dark:block hidden" loading="eager" src="/images/nitrostudio-inverse.png" alt="Logo"
-             style={{width: '180px', height: 'auto'}}>
-        <img class="block dark:hidden" loading="eager" src="/images/nitrostudio.png" alt="Logo"
-             style={{width: '180px', height: 'auto'}}>
+        <img class="dark:block hidden h-8 w-auto" loading="eager" src="/images/nitrostudio-inverse.png" alt="Logo" />
+        <img class="block dark:hidden h-8 w-auto" loading="eager" src="/images/nitrostudio.png" alt="Logo" />
     </a>
     <nav class="links ml-auto">
         <ul class="flex flex-row gap-4 items-center">
-            <li class="w-[30px] h-[30px]">
+            <li class="w-6 h-6">
                 <DarkModeToggle client:load/>
             </li>
             <!-- Iconos de github -->
             {REPOSITORY_URL !== '' && (
-              <li class="w-[30px] h-[30px]">
+              <li class="w-6 h-6">
                   <a href={REPOSITORY_URL}>
-                      <svg width="30" height="30" viewBox="0 -3.5 256 256" xmlns="http://www.w3.org/2000/svg"
+                      <svg width="24" height="24" viewBox="0 -3.5 256 256" xmlns="http://www.w3.org/2000/svg"
                            preserveAspectRatio="xMinYMin meet" fill="#000000">
                           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                           <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -32,9 +30,9 @@ import {APP_URL, REPOSITORY_URL} from "../constants";
                   </a>
               </li>
             )}
-            <li class="w-[30px] h-[30px]">
+            <li class="w-6 h-6">
                 <a href="https://www.patreon.com/c/mxrck" class="text-[#FF424D] dark:text-white" target="_blank">
-                    <svg width="30px" height="30px" viewBox="0 -4.5 256 256" version="1.1"
+                    <svg width="24px" height="24px" viewBox="0 -4.5 256 256" version="1.1"
                          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                          preserveAspectRatio="xMidYMid">
                         <g>
