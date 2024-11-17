@@ -21,6 +21,14 @@
     "year": "2024",
     "filename": "20241009.txt.zip",
     "encoding": "latin1",
+    "is_latest": false
+  },
+  {
+    "day": "16",
+    "month": "11",
+    "year": "2024",
+    "filename": "20241116.txt.zip",
+    "encoding": "latin1",
     "is_latest": true
   }
 ]
