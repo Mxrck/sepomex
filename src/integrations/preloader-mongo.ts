@@ -1,6 +1,7 @@
 import { getClient as getMongoClient } from "../lib/utils-mongodb";
 import type { AstroIntegration } from "astro";
-import fs, {readFileSync} from 'fs';
+import {readFileSync} from 'fs';
+import AdmZip from 'adm-zip';
 
 import SepomexFiles from "../data/sepomex-files/data.json";
 import path from "path";
@@ -8,7 +9,17 @@ export const SEPOMEX_FILES: Array<{day: string, month: string, year: string, fil
 
 const getSepomexFileContent = async ({filename, encoding = 'latin1'}: {filename: string, encoding?: BufferEncoding}) => {
     const filePath = path.join('src', 'data', 'sepomex-files', filename);
-    return readFileSync(filePath, {encoding, flag: 'r'}).replaceAll('\r', '').split('\n')
+    if (filename.endsWith('.zip')) {
+        const zip = new AdmZip(filePath);
+        const entries = zip.getEntries();
+        const entry = entries.find(entry => entry.entryName.endsWith('.txt')); // Get the first txt file
+        if (!entry) throw new Error('No txt file found in the zip');
+        return entry.getData().toString(encoding).replaceAll('\r', '').split('\n');
+    }
+    else if (filename.endsWith('.txt')) {
+        return readFileSync(filePath, {encoding, flag: 'r'}).replaceAll('\r', '').split('\n');
+    }
+    throw new Error('Invalid file extension (only .zip and .txt are supported)');
 }
 
 const isPostcode = (postcode: string) : boolean => /^\d{5}$/.test(postcode)

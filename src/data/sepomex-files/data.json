@@ -3,7 +3,7 @@
     "day": "20",
     "month": "01",
     "year": "2024",
-    "filename": "20240120.txt",
+    "filename": "20240120.txt.zip",
     "encoding": "latin1",
     "is_latest": false
   },
@@ -11,7 +11,7 @@
     "day": "20",
     "month": "03",
     "year": "2024",
-    "filename": "20240320.txt",
+    "filename": "20240320.txt.zip",
     "encoding": "latin1",
     "is_latest": false
   },
@@ -19,7 +19,15 @@
     "day": "09",
     "month": "10",
     "year": "2024",
-    "filename": "20241009.txt",
+    "filename": "20241009.txt.zip",
+    "encoding": "latin1",
+    "is_latest": false
+  },
+  {
+    "day": "16",
+    "month": "11",
+    "year": "2024",
+    "filename": "20241116.txt.zip",
     "encoding": "latin1",
     "is_latest": true
   }

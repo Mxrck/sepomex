@@ -100,7 +100,7 @@ Ejemplo de respuesta:
 https://sepomex.nitrostudio.com.mx/api/{VERSION}/estado/{ESTADO}.json
 ```
 
-Ekemplo de respuesta:
+Ejemplo de respuesta:
 
 ```json
 {
